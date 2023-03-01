@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>YouTube 搜索</title>
+    <style>
+      #itemInput {
+        width: 200px;
+      }
+      #addItemBtn {
+        margin-left: 10px;
+      }
+      #searchBtn {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <label for="itemInput">輸入項目：</label>
+    <input type="text" id="itemInput">
+    <button id="addItemBtn">加入列表</button>
+    <ul id="myList"></ul>
+    <button id="searchBtn">搜尋</button>
+
+    <script>
+      const myList = document.getElementById("myList");
+      const itemInput = document.getElementById("itemInput");
+      const addItemBtn = document.getElementById("addItemBtn");
+      const searchBtn = document.getElementById("searchBtn");
+
+      // 添加項目到列表
+      addItemBtn.addEventListener("click", function() {
+        const newItem = document.createElement("li");
+        newItem.textContent = itemInput.value.trim();
+        if (newItem.textContent !== "") {
+          myList.appendChild(newItem);
+          itemInput.value = "";
+        }
+      });
+
+      // 在 YouTube 上搜索每個關鍵字並在新分頁中打開搜索結果
+      function searchKeywords() {
+        let listItems = document.querySelectorAll("#myList li");
+        let searchKeywords = [];
+        listItems.forEach(function(item) {
+          searchKeywords.push(item.textContent.trim());
+        });
+        searchKeywords.forEach(function(keyword) {
+          let url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(keyword);
+          window.open(url, "_blank");
+        });
+      }
+
+      // 貼上文本時將其分割成項目並添加到列表中
+      itemInput.addEventListener("paste", function(e) {
+        e.preventDefault();
+        let pastedText = e.clipboardData.getData("text/plain");
+        let items = pastedText.split("\n");
+        items.forEach(function(item) {
+          const newItem = document.createElement("li");
+          newItem.textContent = item.trim();
+          if (newItem.textContent !== "") {
+            myList.appendChild(newItem);
+          }
+        });
+      });
+
+      // 按下 "搜尋" 按鈕時執行搜索函數
+      searchBtn.addEventListener("click", function() {
+        searchKeywords();
+      });
+    </script>
+  </body>
+</html>
